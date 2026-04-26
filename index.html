@@ -59,7 +59,21 @@
 </style>
 </head>
 <body>
+<style>
+  /* Hide the JSX-loading flash until React mounts */
+  #root:empty + #loading-splash { display:flex; }
+  #loading-splash { display:none; position:fixed; inset:0; z-index:100;
+    background:var(--bg); align-items:center; justify-content:center; flex-direction:column; gap:18px; }
+  #loading-splash img { width:64px; height:64px; opacity:.95; animation: pp-pulse 1.4s ease-in-out infinite; }
+  #loading-splash .lbl { font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--ink-3); letter-spacing:.18em; text-transform:uppercase; }
+  @keyframes pp-pulse { 0%,100% { opacity:.55; transform:scale(.98) } 50% { opacity:1; transform:scale(1) } }
+</style>
 <div id="root"></div>
+<div id="loading-splash">
+  <img src="assets/prestapay-logo.png" alt="PrestaPay"/>
+  <div class="lbl">Cargando · PrestaPay</div>
+</div>
 
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useMemo } = React;
@@ -97,7 +111,7 @@ const COPY = {
       title:"Tres pasos. Sin sorpresas.",
       steps:[
         { n:"01", t:"Solicita en 4 minutos", b:"Descarga la app, ingresa tu cédula y responde unas preguntas. Sin formularios físicos." },
-        { n:"02", t:"Recibe tu decisión", b:"Nuestro motor de crédito (Finvero) evalúa tu perfil con datos alternativos. Te avisamos al instante." },
+        { n:"02", t:"Recibe tu decisión", b:"Nuestro motor de crédito evalúa tu perfil con datos alternativos. Te avisamos al instante." },
         { n:"03", t:"Acredita y aprende", b:"El dinero llega a tu cuenta o billetera. Empiezas tu primera lección de la Academia el mismo día." }
       ]
     },
@@ -148,7 +162,7 @@ const COPY = {
       kicker:"Preguntas frecuentes",
       title:"Lo que la gente nos pregunta.",
       items:[
-        { q:"¿Quién está detrás de PrestaPay?", a:"PrestaPay es una marca de IBBA Group, conglomerado ecuatoriano con presencia en servicios financieros, tecnología y educación. La plataforma de crédito está construida sobre Finvero, nuestro motor de originación digital." },
+        { q:"¿Quién está detrás de PrestaPay?", a:"PrestaPay es una marca de IBBA Group, conglomerado ecuatoriano con presencia en servicios financieros, tecnología y educación. Toda la plataforma está desarrollada y respaldada por IBBA Group." },
         { q:"¿Necesito garante o historial bancario?", a:"No. Evaluamos con datos alternativos: comportamiento de pagos, actividad del negocio y referencias. La mayoría de nuestros clientes accedió a su primer crédito formal con nosotros." },
         { q:"¿Cuánto cuesta el crédito?", a:"Las tasas comienzan en 1,9% mensual y dependen de tu perfil y plazo. Verás la cuota total y el costo financiero antes de firmar — sin letra chica." },
         { q:"¿Y si no puedo pagar a tiempo?", a:"Avísanos antes. Tenemos planes de reestructuración y pausa por emergencia. Nuestro objetivo es que termines el crédito, no que te endeudes más." },
@@ -162,11 +176,11 @@ const COPY = {
       secondary:"Hablar con un asesor"
     },
     foot:{
-      tag:"PrestaPay es una marca de IBBA Group · Tecnología por Finvero",
+      tag:"PrestaPay es una marca de IBBA Group",
       addr:"Av. República del Salvador N36-140, Quito, Ecuador",
       cols:[
         { t:"Producto", l:["Crédito personal","Crédito de negocio","Academia PrestaPay","Descargar app"] },
-        { t:"Empresa", l:["Sobre IBBA Group","Finvero","Trabaja con nosotros","Prensa"] },
+        { t:"Empresa", l:["Sobre IBBA Group","Trabaja con nosotros","Prensa"] },
         { t:"Legal", l:["Términos y condiciones","Política de privacidad","Tasas y costos","Defensoría del cliente"] },
         { t:"Contacto", l:["hola@prestapay.ec"] }
       ],
@@ -204,7 +218,7 @@ const COPY = {
       title:"Three steps. No surprises.",
       steps:[
         { n:"01", t:"Apply in 4 minutes", b:"Download the app, enter your ID, answer a few questions. No paper forms." },
-        { n:"02", t:"Get your decision", b:"Our credit engine (Finvero) evaluates your profile with alternative data. We respond instantly." },
+        { n:"02", t:"Get your decision", b:"Our credit engine evaluates your profile with alternative data. We respond instantly." },
         { n:"03", t:"Cash in & start learning", b:"Money lands in your account or wallet. You start your first Academy lesson the same day." }
       ]
     },
@@ -255,7 +269,7 @@ const COPY = {
       kicker:"FAQ",
       title:"What people ask us.",
       items:[
-        { q:"Who's behind PrestaPay?", a:"PrestaPay is a brand of IBBA Group, an Ecuadorian conglomerate operating in financial services, technology, and education. The credit platform is built on Finvero, our digital origination engine." },
+        { q:"Who's behind PrestaPay?", a:"PrestaPay is a brand of IBBA Group, an Ecuadorian conglomerate operating in financial services, technology, and education. The entire platform is developed and backed by IBBA Group." },
         { q:"Do I need a guarantor or banking history?", a:"No. We evaluate with alternative data: payment behavior, business activity, references. Most of our customers got their first formal loan with us." },
         { q:"How much does the credit cost?", a:"Rates start at 1.9% monthly and depend on your profile and term. You'll see the full installment and finance cost before signing — no fine print." },
         { q:"What if I can't pay on time?", a:"Tell us in advance. We have restructuring plans and emergency pauses. Our goal is for you to finish the credit, not pile on debt." },
@@ -269,11 +283,11 @@ const COPY = {
       secondary:"Talk to an advisor"
     },
     foot:{
-      tag:"PrestaPay is a brand of IBBA Group · Powered by Finvero",
+      tag:"PrestaPay is a brand of IBBA Group",
       addr:"Av. República del Salvador N36-140, Quito, Ecuador",
       cols:[
         { t:"Product", l:["Personal credit","Business credit","PrestaPay Academy","Download app"] },
-        { t:"Company", l:["About IBBA Group","Finvero","Careers","Press"] },
+        { t:"Company", l:["About IBBA Group","Careers","Press"] },
         { t:"Legal", l:["Terms & conditions","Privacy policy","Rates & fees","Customer ombudsman"] },
         { t:"Contact", l:["hello@prestapay.ec"] }
       ],
@@ -347,7 +361,7 @@ function Nav({ lang, setLang }) {
       <div style={{maxWidth:1280, margin:"0 auto", padding:"16px 32px",
         display:"flex", alignItems:"center", justifyContent:"space-between", gap:24}}>
         <a href="#" style={{display:"flex", alignItems:"center", gap:10}}>
-          <Mark/>
+          <Mark size={40}/>
           <span className="display" style={{fontSize:22, fontWeight:700, letterSpacing:"-0.02em"}}>PrestaPay</span>
         </a>
         <nav style={{display:"flex", gap:32, fontSize:14, color:"var(--ink-2)"}}>
@@ -1047,8 +1061,8 @@ function Footer({ lang }) {
         <div style={{display:"grid", gridTemplateColumns:"1.4fr 1fr 1fr 1fr 1fr", gap:48, marginBottom:64}}>
           <div>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:18}}>
-              <Mark/>
-              <span className="display" style={{fontSize:22, fontWeight:700}}>PrestaPay</span>
+              <Mark size={36}/>
+              <span className="display" style={{fontSize:22, fontWeight:700, lineHeight:1}}>PrestaPay</span>
             </div>
             <p style={{fontSize:14, lineHeight:1.55, color:"var(--ink-2)", margin:"0 0 16px", maxWidth:280}}>{t.tag}</p>
             <p className="mono" style={{fontSize:11, color:"var(--ink-3)", letterSpacing:"0.08em", lineHeight:1.5, margin:0}}>{t.addr}</p>
@@ -1071,8 +1085,6 @@ function Footer({ lang }) {
           <div className="mono" style={{fontSize:11, color:"var(--ink-3)", letterSpacing:"0.08em"}}>{t.copyright}</div>
           <div style={{display:"flex", gap:18, fontSize:12, color:"var(--ink-3)"}}>
             <span>IBBA Group</span>
-            <span>·</span>
-            <span>Finvero</span>
             <span>·</span>
             <span>Quito, Ecuador 🇪🇨</span>
           </div>
