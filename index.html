@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PrestaPay — Crédito que enseña, negocios que crecen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root{
+    /* PrestaPay brand */
+    --navy:#13314F;        /* deepest spiral navy / wordmark */
+    --navy-2:#1B3F66;
+    --navy-soft:#2A557F;
+    --teal:#1FA6C9;        /* mid spiral teal */
+    --teal-2:#15C8B2;      /* spiral teal-green */
+    --green:#2BD49C;       /* outer spiral green */
+    --accent:#15C8B2;      /* primary accent */
+    --accent-soft:#A9EBE0;
+    --bg:#F4F7F9;          /* cool off-white */
+    --bg-2:#E8EEF2;
+    --ink:#13314F;
+    --ink-2:#3D5675;
+    --ink-3:#7388A1;
+    --line:#DCE4EB;
+    --line-2:#C3CFD9;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  .display{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;letter-spacing:-0.02em;line-height:1.02}
+  .mono{font-family:'JetBrains Mono',monospace}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  ::selection{background:var(--accent);color:var(--navy)}
+
+  /* placeholder bars */
+  .ph{background:
+    repeating-linear-gradient(135deg,
+      rgba(19,49,79,0.06) 0 8px,
+      rgba(19,49,79,0.02) 8px 16px),
+    var(--bg-2);
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:0.08em;
+  }
+  .ph.dark{background:
+    repeating-linear-gradient(135deg,
+      rgba(255,255,255,0.06) 0 8px,
+      rgba(255,255,255,0.02) 8px 16px),
+    var(--navy-2);
+    border-color:rgba(255,255,255,0.1);color:rgba(255,253,248,0.5);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo } = React;
+
+/* ---------------- i18n ---------------- */
+const COPY = {
+  es: {
+    nav: { product:"Producto", education:"Educación", business:"Negocios", about:"Nosotros", login:"Ingresar", signup:"Solicitar crédito" },
+    hero: {
+      eyebrow:"PrestaPay · una empresa de IBBA Group",
+      title_a:"Crédito que",
+      title_b:"enseña.",
+      title_c:"Negocios que",
+      title_d:"crecen.",
+      sub:"Microcréditos digitales para emprendedores y familias del Ecuador. Cuotas claras, aprobación inmediata y educación financiera incluida — todo desde tu celular.",
+      cta_primary:"Solicitar mi crédito",
+      cta_secondary:"Cómo funciona",
+      trust:"Más de 12.000 clientes confían en nosotros",
+      stat1_l:"Aprobación", stat1_v:"Inmediata",
+      stat3_l:"Incremento en ventas para comercios", stat3_v:"30%"
+    },
+    badge:{ regulated:"Plataforma regulada", powered:"Con el respaldo y tecnología de IBBA Group" },
+    pillars:{
+      kicker:"Tres pilares",
+      title:"Diseñado para que aprendas mientras creces.",
+      sub:"No es solo un préstamo. Es un sistema de tres partes que acompaña tu vida financiera completa.",
+      items:[
+        { tag:"01 · Crédito", title:"Microcrédito justo y rápido", body:"Solicita desde $100 hasta $5.000. Decisión en menos de 24 horas, sin papeleo, sin garantes ocultos. Cuotas que entiendes antes de firmar.", chip:"Desde 1,9% mensual" },
+        { tag:"02 · Educación", title:"Academia PrestaPay", body:"Cada cliente recibe acceso a cursos cortos: presupuesto, ahorro, deuda saludable, ventas, redes sociales para tu negocio. Aprendes en 5 minutos al día.", chip:"+40 lecciones gratis" },
+        { tag:"03 · Crecimiento", title:"Tu negocio, escalonado", body:"A medida que pagas a tiempo, desbloqueas montos mayores, plazos más largos y herramientas para tu emprendimiento: facturación, inventario, métricas.", chip:"Score visible siempre" }
+      ]
+    },
+    how:{
+      kicker:"Cómo funciona",
+      title:"Tres pasos. Sin sorpresas.",
+      steps:[
+        { n:"01", t:"Solicita en 4 minutos", b:"Descarga la app, ingresa tu cédula y responde unas preguntas. Sin formularios físicos." },
+        { n:"02", t:"Recibe tu decisión", b:"Nuestro motor de crédito (Finvero) evalúa tu perfil con datos alternativos. Te avisamos al instante." },
+        { n:"03", t:"Acredita y aprende", b:"El dinero llega a tu cuenta o billetera. Empiezas tu primera lección de la Academia el mismo día." }
+      ]
+    },
+    edu:{
+      kicker:"Educación financiera",
+      title:"El crédito sin educación es una trampa. Por eso cambiamos las reglas.",
+      sub:"Cada peso prestado viene con conocimiento que dura toda la vida. Lecciones diseñadas para emprendedores ecuatorianos, no traducciones de manuales gringos.",
+      tracks:[
+        { code:"P-01", t:"Presupuesto familiar", d:"6 lecciones · 32 min" },
+        { code:"D-02", t:"Deuda saludable", d:"4 lecciones · 18 min" },
+        { code:"V-03", t:"Ventas en tu barrio", d:"8 lecciones · 45 min" },
+        { code:"R-04", t:"Redes para tu negocio", d:"10 lecciones · 1h 12min" },
+        { code:"I-05", t:"Inventario simple", d:"5 lecciones · 22 min" },
+        { code:"A-06", t:"Ahorro con metas", d:"6 lecciones · 30 min" }
+      ],
+      cta:"Ver toda la Academia"
+    },
+    business:{
+      kicker:"Para negocios",
+      title:"Olvídate del gasto en cobranza y enfócate en tu crecimiento de negocio.",
+      sub:"Eliminamos el dolor de cabeza de cobrar y la preocupación para que te dediques a crecer tu negocio.",
+      features:[
+        { t:"Incrementa tus ventas al delegar tu área de cobranzas", b:"Nosotros nos encargamos de cobrar a tus clientes para que tu equipo se enfoque en vender y atender, no en perseguir pagos." },
+        { t:"Score basado en IA y con el respaldo de Equifax", b:"Combinamos inteligencia artificial con el buró de Equifax para evaluar a cada cliente con precisión y abrir puertas a montos mayores." },
+        { t:"Tablero de ventas", b:"Registra ventas y gastos en la app. Mira en qué días ganas más y por qué." },
+        { t:"Mentoría 1 a 1", b:"Después de tu tercer crédito al día, accedes a sesiones con asesores de negocio." }
+      ]
+    },
+    app:{
+      kicker:"App PrestaPay",
+      title:"Toda tu vida financiera en un solo lugar.",
+      sub:"Solicita, paga, aprende y mide tu negocio desde Android. iOS llega pronto.",
+      bullets:["Solicitud 100% digital","Recordatorios de pago automáticos","Lecciones cortas en video","Soporte humano por WhatsApp"],
+      cta_play:"Descargar en Google Play",
+      cta_play_sub:"com.dev.prestapay",
+      screen_label:"App home · Android"
+    },
+    testim:{
+      kicker:"Nuestros clientes",
+      title:"Historias reales del Ecuador.",
+      items:[
+        { q:"Empecé con $300 para comprar tela. Hoy tengo dos máquinas y una empleada. La Academia me enseñó a poner precios bien.", n:"Mariana C.", r:"Confección · Ambato" },
+        { q:"Lo que más me gusta es que sé exactamente cuánto pago, cuándo y por qué. Antes me prestaban y nunca entendía la cuenta.", n:"Jorge V.", r:"Tienda de barrio · Quito" },
+        { q:"El curso de redes sociales me trajo más clientes que el préstamo mismo. Y eso que el préstamo me salvó la temporada.", n:"Daniela P.", r:"Repostería · Cuenca" }
+      ]
+    },
+    faq:{
+      kicker:"Preguntas frecuentes",
+      title:"Lo que la gente nos pregunta.",
+      items:[
+        { q:"¿Quién está detrás de PrestaPay?", a:"PrestaPay es una marca de IBBA Group, conglomerado ecuatoriano con presencia en servicios financieros, tecnología y educación. La plataforma de crédito está construida sobre Finvero, nuestro motor de originación digital." },
+        { q:"¿Necesito garante o historial bancario?", a:"No. Evaluamos con datos alternativos: comportamiento de pagos, actividad del negocio y referencias. La mayoría de nuestros clientes accedió a su primer crédito formal con nosotros." },
+        { q:"¿Cuánto cuesta el crédito?", a:"Las tasas comienzan en 1,9% mensual y dependen de tu perfil y plazo. Verás la cuota total y el costo financiero antes de firmar — sin letra chica." },
+        { q:"¿Y si no puedo pagar a tiempo?", a:"Avísanos antes. Tenemos planes de reestructuración y pausa por emergencia. Nuestro objetivo es que termines el crédito, no que te endeudes más." },
+        { q:"¿La Academia tiene costo extra?", a:"No. Es completamente gratis para clientes activos y se queda contigo aunque ya hayas pagado el crédito." }
+      ]
+    },
+    cta:{
+      title:"Tu próximo crédito puede ser el primero que entiendas de verdad.",
+      sub:"Solicita en 4 minutos. Aprobación inmediata. Educación incluida.",
+      primary:"Solicitar ahora",
+      secondary:"Hablar con un asesor"
+    },
+    foot:{
+      tag:"PrestaPay es una marca de IBBA Group · Tecnología por Finvero",
+      addr:"Av. República del Salvador N36-140, Quito, Ecuador",
+      cols:[
+        { t:"Producto", l:["Crédito personal","Crédito de negocio","Academia PrestaPay","Descargar app"] },
+        { t:"Empresa", l:["Sobre IBBA Group","Finvero","Trabaja con nosotros","Prensa"] },
+        { t:"Legal", l:["Términos y condiciones","Política de privacidad","Tasas y costos","Defensoría del cliente"] },
+        { t:"Contacto", l:["hola@prestapay.ec"] }
+      ],
+      copyright:"© 2026 PrestaPay · IBBA Group. Todos los derechos reservados."
+    }
+  },
+  en: {
+    nav: { product:"Product", education:"Education", business:"Business", about:"About", login:"Sign in", signup:"Apply for credit" },
+    hero: {
+      eyebrow:"PrestaPay · an IBBA Group company",
+      title_a:"Credit that",
+      title_b:"teaches.",
+      title_c:"Businesses that",
+      title_d:"grow.",
+      sub:"Digital microcredit for entrepreneurs and families in Ecuador. Clear installments, instant approval, and financial education included — all from your phone.",
+      cta_primary:"Apply for credit",
+      cta_secondary:"How it works",
+      trust:"Trusted by 12,000+ customers",
+      stat1_l:"Approval", stat1_v:"Instant",
+      stat3_l:"Sales lift for merchants", stat3_v:"30%"
+    },
+    badge:{ regulated:"Regulated platform", powered:"Backed by and powered by IBBA Group" },
+    pillars:{
+      kicker:"Three pillars",
+      title:"Designed so you learn while you grow.",
+      sub:"It's not just a loan. It's a three-part system that accompanies your full financial life.",
+      items:[
+        { tag:"01 · Credit", title:"Fair, fast microcredit", body:"Borrow from $100 to $5,000. Decision in under 24 hours, no paperwork, no hidden guarantors. Installments you understand before you sign.", chip:"From 1.9% monthly" },
+        { tag:"02 · Education", title:"PrestaPay Academy", body:"Every customer gets access to short courses: budgeting, savings, healthy debt, sales, social media for your business. Learn in 5 minutes a day.", chip:"40+ free lessons" },
+        { tag:"03 · Growth", title:"Your business, leveled up", body:"As you pay on time, you unlock larger amounts, longer terms, and tools for your venture: invoicing, inventory, metrics.", chip:"Score always visible" }
+      ]
+    },
+    how:{
+      kicker:"How it works",
+      title:"Three steps. No surprises.",
+      steps:[
+        { n:"01", t:"Apply in 4 minutes", b:"Download the app, enter your ID, answer a few questions. No paper forms." },
+        { n:"02", t:"Get your decision", b:"Our credit engine (Finvero) evaluates your profile with alternative data. We respond instantly." },
+        { n:"03", t:"Cash in & start learning", b:"Money lands in your account or wallet. You start your first Academy lesson the same day." }
+      ]
+    },
+    edu:{
+      kicker:"Financial education",
+      title:"Credit without education is a trap. So we changed the rules.",
+      sub:"Every dollar borrowed comes with knowledge that lasts a lifetime. Lessons built for Ecuadorian entrepreneurs, not translated US manuals.",
+      tracks:[
+        { code:"P-01", t:"Family budgeting", d:"6 lessons · 32 min" },
+        { code:"D-02", t:"Healthy debt", d:"4 lessons · 18 min" },
+        { code:"V-03", t:"Sales in your neighborhood", d:"8 lessons · 45 min" },
+        { code:"R-04", t:"Social media for your business", d:"10 lessons · 1h 12min" },
+        { code:"I-05", t:"Simple inventory", d:"5 lessons · 22 min" },
+        { code:"A-06", t:"Goal-based saving", d:"6 lessons · 30 min" }
+      ],
+      cta:"Browse the full Academy"
+    },
+    business:{
+      kicker:"For businesses",
+      title:"Forget about collections costs and focus on growing your business.",
+      sub:"We take the headache of collecting off your plate so you can focus on growing.",
+      features:[
+        { t:"Grow sales by delegating your collections", b:"We handle collecting from your customers so your team can focus on selling and serving, not chasing payments." },
+        { t:"AI-based score backed by Equifax", b:"We combine artificial intelligence with the Equifax bureau to evaluate each customer accurately and unlock larger amounts." },
+        { t:"Sales dashboard", b:"Log sales and expenses in the app. See which days you earn the most, and why." },
+        { t:"1-on-1 mentorship", b:"After your third on-time credit, you access sessions with business advisors." }
+      ]
+    },
+    app:{
+      kicker:"PrestaPay app",
+      title:"Your full financial life in one place.",
+      sub:"Apply, pay, learn, and measure your business from Android. iOS coming soon.",
+      bullets:["100% digital application","Automatic payment reminders","Short video lessons","Human support via WhatsApp"],
+      cta_play:"Get it on Google Play",
+      cta_play_sub:"com.dev.prestapay",
+      screen_label:"App home · Android"
+    },
+    testim:{
+      kicker:"Our customers",
+      title:"Real stories from Ecuador.",
+      items:[
+        { q:"I started with $300 to buy fabric. Today I have two machines and one employee. The Academy taught me how to price properly.", n:"Mariana C.", r:"Tailoring · Ambato" },
+        { q:"What I like most is that I know exactly how much I pay, when, and why. Before, I'd borrow and never understand the math.", n:"Jorge V.", r:"Corner store · Quito" },
+        { q:"The social media course brought me more customers than the loan itself. And the loan saved my season.", n:"Daniela P.", r:"Bakery · Cuenca" }
+      ]
+    },
+    faq:{
+      kicker:"FAQ",
+      title:"What people ask us.",
+      items:[
+        { q:"Who's behind PrestaPay?", a:"PrestaPay is a brand of IBBA Group, an Ecuadorian conglomerate operating in financial services, technology, and education. The credit platform is built on Finvero, our digital origination engine." },
+        { q:"Do I need a guarantor or banking history?", a:"No. We evaluate with alternative data: payment behavior, business activity, references. Most of our customers got their first formal loan with us." },
+        { q:"How much does the credit cost?", a:"Rates start at 1.9% monthly and depend on your profile and term. You'll see the full installment and finance cost before signing — no fine print." },
+        { q:"What if I can't pay on time?", a:"Tell us in advance. We have restructuring plans and emergency pauses. Our goal is for you to finish the credit, not pile on debt." },
+        { q:"Does the Academy cost extra?", a:"No. It's completely free for active customers and stays with you even after you've paid off." }
+      ]
+    },
+    cta:{
+      title:"Your next loan can be the first one you actually understand.",
+      sub:"Apply in 4 minutes. Instant approval. Education included.",
+      primary:"Apply now",
+      secondary:"Talk to an advisor"
+    },
+    foot:{
+      tag:"PrestaPay is a brand of IBBA Group · Powered by Finvero",
+      addr:"Av. República del Salvador N36-140, Quito, Ecuador",
+      cols:[
+        { t:"Product", l:["Personal credit","Business credit","PrestaPay Academy","Download app"] },
+        { t:"Company", l:["About IBBA Group","Finvero","Careers","Press"] },
+        { t:"Legal", l:["Terms & conditions","Privacy policy","Rates & fees","Customer ombudsman"] },
+        { t:"Contact", l:["hello@prestapay.ec"] }
+      ],
+      copyright:"© 2026 PrestaPay · IBBA Group. All rights reserved."
+    }
+  }
+};
+
+const PLAY_URL = "https://play.google.com/store/apps/details?id=com.dev.prestapay&hl=es_EC";
+
+/* ---------------- Icons (simple geometric) ---------------- */
+// Brand mark — official PrestaPay logo asset.
+const Mark = ({ size=32 }) => (
+  <img src="assets/prestapay-logo.png" alt="PrestaPay"
+       width={size} height={size}
+       style={{ width:size, height:size, objectFit:"contain", display:"block" }}/>
+);
+
+const Arrow = ({ size=14 }) => (
+  <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const Check = ({ size=14 }) => (
+  <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M2.5 7.5l3 3 6-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const PlayLogo = ({ size=20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3.5 2.5v19l8.7-9.5L3.5 2.5z" fill="#1FA6C9"/>
+    <path d="M3.5 2.5l13.2 7.6-2.5 2.4L3.5 2.5z" fill="#3FC4E6"/>
+    <path d="M3.5 21.5l13.2-7.6-2.5-2.4L3.5 21.5z" fill="#2BD49C"/>
+    <path d="M16.7 10.1l4 2.3-4 2.3-2.5-2.3 2.5-2.3z" fill="#13314F"/>
+  </svg>
+);
+
+/* ---------------- Lang toggle ---------------- */
+function LangToggle({ lang, setLang }) {
+  return (
+    <div style={{
+      display:"inline-flex", padding:3, borderRadius:999,
+      background:"rgba(19,49,79,0.06)", border:"1px solid rgba(19,49,79,0.08)"
+    }}>
+      {["es","en"].map(l => (
+        <button key={l} onClick={()=>setLang(l)}
+          className="mono"
+          style={{
+            padding:"6px 12px", borderRadius:999, fontSize:11, letterSpacing:"0.1em",
+            textTransform:"uppercase", fontWeight:600,
+            background: lang===l ? "var(--navy)" : "transparent",
+            color: lang===l ? "var(--accent-soft)" : "var(--ink-2)",
+            transition:"all .2s"
+          }}>{l}</button>
+      ))}
+    </div>
+  );
+}
+
+/* ---------------- Nav ---------------- */
+function Nav({ lang, setLang }) {
+  const t = COPY[lang].nav;
+  return (
+    <header style={{
+      position:"sticky", top:0, zIndex:50,
+      background:"rgba(247,243,236,0.85)", backdropFilter:"blur(12px)",
+      borderBottom:"1px solid var(--line)"
+    }}>
+      <div style={{maxWidth:1280, margin:"0 auto", padding:"16px 32px",
+        display:"flex", alignItems:"center", justifyContent:"space-between", gap:24}}>
+        <a href="#" style={{display:"flex", alignItems:"center", gap:10}}>
+          <Mark/>
+          <span className="display" style={{fontSize:22, fontWeight:700, letterSpacing:"-0.02em"}}>PrestaPay</span>
+        </a>
+        <nav style={{display:"flex", gap:32, fontSize:14, color:"var(--ink-2)"}}>
+          <a href="#producto">{t.product}</a>
+          <a href="#educacion">{t.education}</a>
+          <a href="#negocios">{t.business}</a>
+          <a href="#nosotros">{t.about}</a>
+        </nav>
+        <div style={{display:"flex", alignItems:"center", gap:14}}>
+          <LangToggle lang={lang} setLang={setLang}/>
+          <a href="#" style={{fontSize:14, color:"var(--ink-2)"}}>{t.login}</a>
+          <a href="#cta" style={{
+            padding:"10px 18px", borderRadius:999, background:"var(--navy)", color:"var(--accent-soft)",
+            fontSize:13, fontWeight:500, display:"inline-flex", gap:8, alignItems:"center"
+          }}>{t.signup} <Arrow/></a>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ---------------- Hero ---------------- */
+function Hero({ lang }) {
+  const t = COPY[lang].hero;
+  const b = COPY[lang].badge;
+  return (
+    <section style={{position:"relative", overflow:"hidden"}}>
+      {/* Decorative grid */}
+      <div aria-hidden="true" style={{
+        position:"absolute", inset:0, opacity:0.4,
+        backgroundImage:"linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px)",
+        backgroundSize:"56px 56px",
+        maskImage:"radial-gradient(ellipse at 70% 0%, #000 30%, transparent 75%)",
+        WebkitMaskImage:"radial-gradient(ellipse at 70% 0%, #000 30%, transparent 75%)"
+      }}/>
+      <div style={{maxWidth:1280, margin:"0 auto", padding:"72px 32px 96px", position:"relative"}}>
+        <div className="mono" style={{
+          display:"inline-flex", alignItems:"center", gap:10, fontSize:11,
+          textTransform:"uppercase", letterSpacing:"0.14em", color:"var(--ink-3)",
+          padding:"6px 12px", borderRadius:999, border:"1px solid var(--line-2)", background:"rgba(255,255,255,0.6)"
+        }}>
+          <span style={{width:6,height:6,borderRadius:99,background:"var(--accent)"}}/>
+          {t.eyebrow}
+        </div>
+
+        <h1 className="display" style={{
+          fontSize:"clamp(48px, 7vw, 104px)", margin:"32px 0 28px", maxWidth:1100
+        }}>
+          {t.title_a} <em style={{fontStyle:"normal", color:"var(--accent)"}}>{t.title_b}</em><br/>
+          {t.title_c} <em style={{fontStyle:"normal", color:"var(--green)"}}>{t.title_d}</em>
+        </h1>
+
+        <p style={{
+          fontSize:20, lineHeight:1.5, maxWidth:680, color:"var(--ink-2)", margin:"0 0 36px"
+        }}>{t.sub}</p>
+
+        <div style={{display:"flex", gap:14, flexWrap:"wrap", alignItems:"center"}}>
+          <a href="#cta" style={{
+            padding:"16px 26px", borderRadius:999, background:"var(--navy)", color:"var(--accent-soft)",
+            fontSize:15, fontWeight:500, display:"inline-flex", gap:10, alignItems:"center"
+          }}>{t.cta_primary} <Arrow size={16}/></a>
+          <a href="#how" style={{
+            padding:"16px 26px", borderRadius:999, border:"1px solid var(--line-2)",
+            fontSize:15, fontWeight:500, color:"var(--ink)"
+          }}>{t.cta_secondary}</a>
+          <div style={{display:"flex", alignItems:"center", gap:10, marginLeft:6}}>
+            <div style={{display:"flex"}}>
+              {[
+                "linear-gradient(135deg,#13314F,#1B3F66)",
+                "linear-gradient(135deg,#1B6A8A,#1FA6C9)",
+                "linear-gradient(135deg,#1FA6C9,#15C8B2)",
+                "linear-gradient(135deg,#15C8B2,#2BD49C)"
+              ].map((bg,i)=>(
+                <div key={i} style={{
+                  width:30,height:30,borderRadius:99, marginLeft:i?-10:0,
+                  background:bg,
+                  border:"2px solid var(--bg)"
+                }}/>
+              ))}
+            </div>
+            <span className="mono" style={{fontSize:11, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.1em"}}>
+              {t.trust}
+            </span>
+          </div>
+        </div>
+
+        {/* Stats strip */}
+        <div style={{
+          marginTop:80, display:"grid", gridTemplateColumns:"1.4fr 1fr 1fr",
+          border:"1px solid var(--line)", borderRadius:20, background:"var(--white)",
+          overflow:"hidden"
+        }}>
+          <div style={{padding:"28px 32px", borderRight:"1px solid var(--line)", display:"flex", alignItems:"center", gap:16}}>
+            <div style={{
+              width:44,height:44,borderRadius:12, background:"var(--navy)",
+              display:"flex", alignItems:"center", justifyContent:"center"
+            }}>
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M11 2l2.5 5.5 5.5.7-4 4 1 5.8L11 15.4 5 18l1-5.8-4-4 5.5-.7L11 2z" fill="#E8A33D"/>
+              </svg>
+            </div>
+            <div>
+              <div className="mono" style={{fontSize:11, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.12em"}}>{b.regulated}</div>
+              <div style={{fontSize:13, marginTop:4, color:"var(--ink-2)"}}>{b.powered}</div>
+            </div>
+          </div>
+          <Stat l={t.stat1_l} v={t.stat1_v}/>
+          <Stat l={t.stat3_l} v={t.stat3_v} last/>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const Stat = ({l,v,last}) => (
+  <div style={{padding:"28px 32px", borderRight: last?"none":"1px solid var(--line)"}}>
+    <div className="mono" style={{fontSize:11, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.12em"}}>{l}</div>
+    <div className="display" style={{fontSize:36, marginTop:6}}>{v}</div>
+  </div>
+);
+
+/* ---------------- Section header ---------------- */
+const SectionHead = ({ kicker, title, sub, align="left" }) => (
+  <div style={{textAlign:align, maxWidth: align==="center"? 720 : 800, margin: align==="center"?"0 auto":"0"}}>
+    <div className="mono" style={{fontSize:11, color:"var(--accent)", textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600}}>
+      ◆ {kicker}
+    </div>
+    <h2 className="display" style={{fontSize:"clamp(36px, 4.5vw, 60px)", margin:"16px 0 16px"}}>{title}</h2>
+    {sub && <p style={{fontSize:18, lineHeight:1.55, color:"var(--ink-2)", margin:0, maxWidth:640}}>{sub}</p>}
+  </div>
+);
+
+/* ---------------- Pillars ---------------- */
+function Pillars({ lang }) {
+  const t = COPY[lang].pillars;
+  return (
+    <section id="producto" style={{padding:"120px 32px", maxWidth:1280, margin:"0 auto"}}>
+      <SectionHead kicker={t.kicker} title={t.title} sub={t.sub}/>
+      <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:20, marginTop:64}}>
+        {t.items.map((item,i)=>(
+          <div key={i} style={{
+            padding:36, borderRadius:24, background:"var(--white)",
+            border:"1px solid var(--line)", display:"flex", flexDirection:"column",
+            minHeight:380, position:"relative", overflow:"hidden"
+          }}>
+            <div className="mono" style={{
+              fontSize:11, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.14em"
+            }}>{item.tag}</div>
+            <h3 className="display" style={{fontSize:28, margin:"40px 0 16px", lineHeight:1.1}}>{item.title}</h3>
+            <p style={{fontSize:15, lineHeight:1.6, color:"var(--ink-2)", margin:0, flex:1}}>{item.body}</p>
+            <div style={{
+              marginTop:24, alignSelf:"flex-start",
+              padding:"6px 12px", borderRadius:999,
+              background: i===0 ? "rgba(21,200,178,0.14)" : i===1 ? "rgba(43,212,156,0.14)" : "rgba(19,49,79,0.06)",
+              color: i===0 ? "var(--accent)" : i===1 ? "var(--green)" : "var(--navy)",
+              fontSize:12, fontWeight:600
+            }}>{item.chip}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- How ---------------- */
+function How({ lang }) {
+  const t = COPY[lang].how;
+  return (
+    <section id="how" style={{
+      padding:"120px 32px", background:"var(--navy)", color:"var(--bg)"
+    }}>
+      <div style={{maxWidth:1280, margin:"0 auto"}}>
+        <div className="mono" style={{fontSize:11, color:"var(--accent)", textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600}}>◆ {t.kicker}</div>
+        <h2 className="display" style={{fontSize:"clamp(36px, 4.5vw, 60px)", margin:"16px 0 0", color:"var(--bg)"}}>{t.title}</h2>
+
+        <div style={{
+          marginTop:64, display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:0,
+          border:"1px solid rgba(255,255,255,0.12)", borderRadius:24, overflow:"hidden"
+        }}>
+          {t.steps.map((s,i)=>(
+            <div key={i} style={{
+              padding:"40px 36px",
+              borderRight: i<2 ? "1px solid rgba(255,255,255,0.12)" : "none",
+              display:"flex", flexDirection:"column", gap:24, minHeight:280
+            }}>
+              <div className="display" style={{fontSize:64, color:"var(--accent)", lineHeight:1}}>{s.n}</div>
+              <h3 className="display" style={{fontSize:24, margin:0, color:"var(--bg)"}}>{s.t}</h3>
+              <p style={{fontSize:15, lineHeight:1.6, color:"rgba(244,247,249,0.75)", margin:0}}>{s.b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Education ---------------- */
+function Education({ lang }) {
+  const t = COPY[lang].edu;
+  return (
+    <section id="educacion" style={{padding:"120px 32px", maxWidth:1280, margin:"0 auto"}}>
+      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"start"}}>
+        <div>
+          <SectionHead kicker={t.kicker} title={t.title} sub={t.sub}/>
+          <a href="#" style={{
+            marginTop:36, display:"inline-flex", alignItems:"center", gap:10,
+            padding:"14px 22px", borderRadius:999, background:"var(--ink)", color:"var(--accent-soft)",
+            fontSize:14, fontWeight:500
+          }}>{t.cta} <Arrow/></a>
+        </div>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:14}}>
+          {t.tracks.map((tr,i)=>(
+            <div key={i} style={{
+              padding:24, borderRadius:18, border:"1px solid var(--line)", background:"var(--white)",
+              minHeight:140, display:"flex", flexDirection:"column", justifyContent:"space-between",
+              transition:"transform .2s, border-color .2s",
+            }}
+            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.borderColor="var(--accent)";}}
+            onMouseLeave={e=>{e.currentTarget.style.transform=""; e.currentTarget.style.borderColor="var(--line)";}}
+            >
+              <div className="mono" style={{fontSize:11, color:"var(--accent)", letterSpacing:"0.12em"}}>{tr.code}</div>
+              <div>
+                <div className="display" style={{fontSize:18, marginBottom:6}}>{tr.t}</div>
+                <div className="mono" style={{fontSize:11, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.1em"}}>{tr.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Business dashboard mock ---------------- */
+function BusinessDashboard({ lang }) {
+  const t = lang==="es" ? {
+    brand:"Comercio · Boutique Mariana",
+    period:"Últimos 30 días",
+    kpi1_l:"Ventas del mes", kpi1_v:"$18.420", kpi1_d:"+24% vs mes anterior",
+    kpi2_l:"Cobranza al día", kpi2_v:"96,4%", kpi2_d:"Delegada a PrestaPay",
+    kpi3_l:"Clientes activos", kpi3_v:"312", kpi3_d:"+18 nuevos",
+    chart:"Ventas por día", chart_sub:"Comparativo con cobranza propia",
+    score:"Score IA · Equifax", score_v:"742", score_band:"Bueno",
+    score_d:"Habilitado para línea hasta $12.000",
+    activity:"Actividad reciente",
+    rows:[
+      { who:"Juan P.", what:"Cuota cobrada", amt:"+$87,40", when:"hace 2 min", ok:true },
+      { who:"María L.", what:"Recordatorio enviado", amt:"—", when:"hace 14 min", ok:true },
+      { who:"Carlos B.", what:"Pago programado", amt:"$120,00", when:"hace 1 h", ok:true },
+      { who:"Sofía R.", what:"Cuota cobrada", amt:"+$54,80", when:"hace 3 h", ok:true },
+    ],
+    delegated:"Cobranza delegada", delegated_v:"$4.260", delegated_d:"este mes"
+  } : {
+    brand:"Merchant · Boutique Mariana",
+    period:"Last 30 days",
+    kpi1_l:"Monthly sales", kpi1_v:"$18,420", kpi1_d:"+24% vs last month",
+    kpi2_l:"Collections on time", kpi2_v:"96.4%", kpi2_d:"Delegated to PrestaPay",
+    kpi3_l:"Active customers", kpi3_v:"312", kpi3_d:"+18 new",
+    chart:"Sales by day", chart_sub:"Compared to in-house collections",
+    score:"AI Score · Equifax", score_v:"742", score_band:"Good",
+    score_d:"Eligible for line up to $12,000",
+    activity:"Recent activity",
+    rows:[
+      { who:"Juan P.", what:"Installment collected", amt:"+$87.40", when:"2 min ago", ok:true },
+      { who:"María L.", what:"Reminder sent", amt:"—", when:"14 min ago", ok:true },
+      { who:"Carlos B.", what:"Payment scheduled", amt:"$120.00", when:"1 h ago", ok:true },
+      { who:"Sofía R.", what:"Installment collected", amt:"+$54.80", when:"3 h ago", ok:true },
+    ],
+    delegated:"Delegated collections", delegated_v:"$4,260", delegated_d:"this month"
+  };
+
+  // Sales bars (12 days)
+  const bars = [42, 58, 49, 71, 63, 88, 75, 94, 82, 67, 90, 102];
+  const max = Math.max(...bars);
+
+  return (
+    <div style={{
+      borderRadius:24, padding:18,
+      background:"linear-gradient(160deg,#13314F 0%, #1B3F66 55%, #1B6A8A 100%)",
+      color:"#F4F7F9", boxShadow:"0 30px 60px -25px rgba(19,49,79,0.45)",
+      border:"1px solid rgba(255,255,255,0.08)"
+    }}>
+      {/* Top bar */}
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"4px 6px 18px"}}>
+        <div style={{display:"flex", alignItems:"center", gap:10}}>
+          <div style={{width:28, height:28, borderRadius:8, background:"rgba(255,255,255,0.95)", display:"flex", alignItems:"center", justifyContent:"center"}}>
+            <Mark size={20}/>
+          </div>
+          <div>
+            <div style={{fontSize:13, fontWeight:600}}>{t.brand}</div>
+            <div className="mono" style={{fontSize:10, opacity:0.6, letterSpacing:"0.1em"}}>{t.period.toUpperCase()}</div>
+          </div>
+        </div>
+        <div style={{display:"flex", gap:6}}>
+          {[0,1,2].map(i=>(
+            <div key={i} style={{width:28,height:28,borderRadius:8,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.08)"}}/>
+          ))}
+        </div>
+      </div>
+
+      {/* KPI row */}
+      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:14}}>
+        {[
+          { l:t.kpi1_l, v:t.kpi1_v, d:t.kpi1_d, accent:"#15C8B2" },
+          { l:t.kpi2_l, v:t.kpi2_v, d:t.kpi2_d, accent:"#2BD49C" },
+          { l:t.kpi3_l, v:t.kpi3_v, d:t.kpi3_d, accent:"#3FC4E6" }
+        ].map((k,i)=>(
+          <div key={i} style={{
+            padding:14, borderRadius:14,
+            background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)"
+          }}>
+            <div className="mono" style={{fontSize:9, opacity:0.6, textTransform:"uppercase", letterSpacing:"0.12em"}}>{k.l}</div>
+            <div className="display" style={{fontSize:22, marginTop:6}}>{k.v}</div>
+            <div style={{fontSize:10, color:k.accent, marginTop:4, fontWeight:500}}>{k.d}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Chart */}
+      <div style={{
+        padding:16, borderRadius:14,
+        background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)",
+        marginBottom:14
+      }}>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:14}}>
+          <div>
+            <div style={{fontSize:13, fontWeight:600}}>{t.chart}</div>
+            <div className="mono" style={{fontSize:10, opacity:0.55, letterSpacing:"0.08em"}}>{t.chart_sub}</div>
+          </div>
+          <div style={{display:"flex", gap:10, fontSize:10}}>
+            <span style={{display:"inline-flex", alignItems:"center", gap:6}}>
+              <span style={{width:8,height:8,borderRadius:99,background:"#15C8B2"}}/>PrestaPay
+            </span>
+            <span style={{display:"inline-flex", alignItems:"center", gap:6, opacity:0.6}}>
+              <span style={{width:8,height:8,borderRadius:99,background:"rgba(255,255,255,0.3)"}}/>Antes
+            </span>
+          </div>
+        </div>
+        <div style={{display:"flex", alignItems:"flex-end", gap:6, height:90}}>
+          {bars.map((b,i)=>{
+            const h = (b/max)*100;
+            const prev = h * 0.62; // "before" was lower
+            return (
+              <div key={i} style={{flex:1, display:"flex", flexDirection:"column", justifyContent:"flex-end", gap:2, height:"100%", position:"relative"}}>
+                <div style={{
+                  height:`${prev}%`, borderRadius:"3px 3px 0 0",
+                  background:"rgba(255,255,255,0.18)",
+                  position:"absolute", left:0, right:"50%", bottom:0
+                }}/>
+                <div style={{
+                  height:`${h}%`, borderRadius:"3px 3px 0 0",
+                  background:"linear-gradient(180deg,#2BD49C,#15C8B2)",
+                  position:"absolute", left:"50%", right:0, bottom:0
+                }}/>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Score + Delegated */}
+      <div style={{display:"grid", gridTemplateColumns:"1.2fr 1fr", gap:10, marginBottom:14}}>
+        <div style={{
+          padding:16, borderRadius:14,
+          background:"linear-gradient(135deg,rgba(21,200,178,0.16),rgba(43,212,156,0.06))",
+          border:"1px solid rgba(21,200,178,0.25)"
+        }}>
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
+            <div className="mono" style={{fontSize:10, color:"#A9EBE0", letterSpacing:"0.12em", textTransform:"uppercase"}}>{t.score}</div>
+            <div style={{
+              padding:"3px 8px", borderRadius:99, fontSize:10, fontWeight:600,
+              background:"rgba(43,212,156,0.2)", color:"#2BD49C"
+            }}>{t.score_band}</div>
+          </div>
+          <div className="display" style={{fontSize:34, marginTop:8, color:"#F4F7F9"}}>{t.score_v}<span style={{fontSize:14, opacity:0.5}}>/850</span></div>
+          {/* gauge bar */}
+          <div style={{marginTop:10, height:6, borderRadius:99, background:"rgba(255,255,255,0.08)", overflow:"hidden"}}>
+            <div style={{width:"87%", height:"100%", background:"linear-gradient(90deg,#1FA6C9,#15C8B2,#2BD49C)"}}/>
+          </div>
+          <div style={{fontSize:11, opacity:0.7, marginTop:8}}>{t.score_d}</div>
+        </div>
+        <div style={{
+          padding:16, borderRadius:14,
+          background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)"
+        }}>
+          <div className="mono" style={{fontSize:10, opacity:0.6, letterSpacing:"0.12em", textTransform:"uppercase"}}>{t.delegated}</div>
+          <div className="display" style={{fontSize:24, marginTop:8}}>{t.delegated_v}</div>
+          <div style={{fontSize:11, opacity:0.6, marginTop:2}}>{t.delegated_d}</div>
+          <div style={{marginTop:12, display:"flex", gap:3, alignItems:"flex-end", height:28}}>
+            {[14,22,18,28,24,30,26,32,28,34,30,38].map((v,i)=>(
+              <div key={i} style={{flex:1, height:`${(v/38)*100}%`, background:"rgba(63,196,230,0.5)", borderRadius:"2px 2px 0 0"}}/>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Activity */}
+      <div style={{
+        padding:14, borderRadius:14,
+        background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)"
+      }}>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10}}>
+          <div style={{fontSize:13, fontWeight:600}}>{t.activity}</div>
+          <div className="mono" style={{fontSize:10, opacity:0.5, letterSpacing:"0.1em"}}>LIVE</div>
+        </div>
+        <div style={{display:"flex", flexDirection:"column", gap:8}}>
+          {t.rows.map((r,i)=>(
+            <div key={i} style={{
+              display:"grid", gridTemplateColumns:"24px 1fr auto auto", gap:10, alignItems:"center",
+              fontSize:12
+            }}>
+              <div style={{width:8,height:8,borderRadius:99,background:"#2BD49C", marginLeft:8}}/>
+              <div>
+                <span style={{fontWeight:600}}>{r.who}</span>
+                <span style={{opacity:0.6}}> · {r.what}</span>
+              </div>
+              <div className="mono" style={{fontSize:11, color:"#A9EBE0"}}>{r.amt}</div>
+              <div className="mono" style={{fontSize:10, opacity:0.5, letterSpacing:"0.06em"}}>{r.when}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Business ---------------- */
+function Business({ lang }) {
+  const t = COPY[lang].business;
+  return (
+    <section id="negocios" style={{padding:"120px 32px", background:"var(--bg-2)"}}>
+      <div style={{maxWidth:1280, margin:"0 auto"}}>
+        <SectionHead kicker={t.kicker} title={t.title} sub={t.sub}/>
+        <div style={{
+          marginTop:64, display:"grid", gridTemplateColumns:"1.1fr 1fr", gap:64, alignItems:"start"
+        }}>
+          <BusinessDashboard lang={lang}/>
+          <div style={{display:"flex", flexDirection:"column", gap:8}}>
+            {t.features.map((f,i)=>(
+              <div key={i} style={{
+                padding:"24px 0", borderTop: i===0 ? "1px solid var(--line-2)" : "none",
+                borderBottom:"1px solid var(--line-2)",
+                display:"grid", gridTemplateColumns:"36px 1fr", gap:20
+              }}>
+                <div style={{
+                  width:28, height:28, borderRadius:8, background:"var(--navy)",
+                  color:"var(--accent)", display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:12, fontFamily:"'JetBrains Mono', monospace"
+                }}>{String(i+1).padStart(2,"0")}</div>
+                <div>
+                  <div className="display" style={{fontSize:22, marginBottom:6}}>{f.t}</div>
+                  <div style={{fontSize:15, lineHeight:1.6, color:"var(--ink-2)"}}>{f.b}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- App ---------------- */
+function AppSection({ lang }) {
+  const t = COPY[lang].app;
+  return (
+    <section style={{padding:"120px 32px", maxWidth:1280, margin:"0 auto"}}>
+      <div style={{
+        display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"center",
+        background:"var(--navy)", color:"var(--bg)",
+        padding:"72px 64px", borderRadius:32, position:"relative", overflow:"hidden"
+      }}>
+        <div aria-hidden="true" style={{
+          position:"absolute", right:-100, top:-100, width:400, height:400, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(21,200,178,0.18), transparent 70%)"
+        }}/>
+        <div style={{position:"relative"}}>
+          <div className="mono" style={{fontSize:11, color:"var(--accent)", textTransform:"uppercase", letterSpacing:"0.16em", fontWeight:600}}>◆ {t.kicker}</div>
+          <h2 className="display" style={{fontSize:"clamp(32px, 3.6vw, 48px)", margin:"16px 0 16px", color:"var(--bg)"}}>{t.title}</h2>
+          <p style={{fontSize:17, lineHeight:1.55, color:"rgba(244,247,249,0.78)", margin:"0 0 28px"}}>{t.sub}</p>
+          <ul style={{padding:0, margin:"0 0 32px", listStyle:"none", display:"flex", flexDirection:"column", gap:10}}>
+            {t.bullets.map((b,i)=>(
+              <li key={i} style={{display:"flex", alignItems:"center", gap:12, fontSize:15}}>
+                <span style={{
+                  width:22,height:22,borderRadius:99, background:"rgba(21,200,178,0.16)", color:"var(--accent)",
+                  display:"flex", alignItems:"center", justifyContent:"center"
+                }}><Check/></span>
+                {b}
+              </li>
+            ))}
+          </ul>
+          <a href={PLAY_URL} target="_blank" rel="noreferrer" style={{
+            display:"inline-flex", alignItems:"center", gap:14,
+            padding:"14px 22px", borderRadius:14, background:"var(--bg)", color:"var(--navy)",
+          }}>
+            <PlayLogo size={28}/>
+            <div style={{textAlign:"left"}}>
+              <div className="mono" style={{fontSize:10, textTransform:"uppercase", letterSpacing:"0.14em", color:"var(--ink-3)"}}>Google Play</div>
+              <div style={{fontSize:15, fontWeight:600}}>{t.cta_play}</div>
+            </div>
+          </a>
+          <div className="mono" style={{marginTop:14, fontSize:11, color:"rgba(244,247,249,0.55)", letterSpacing:"0.1em"}}>
+            {t.cta_play_sub}
+          </div>
+        </div>
+        <div style={{position:"relative", display:"flex", justifyContent:"center"}}>
+          {/* Phone mock */}
+          <div style={{
+            width:280, height:560, borderRadius:42, background:"#000",
+            padding:8, boxShadow:"0 30px 60px -20px rgba(0,0,0,0.5)"
+          }}>
+            <div style={{
+              width:"100%", height:"100%", borderRadius:34, background:"var(--bg)",
+              overflow:"hidden", position:"relative", display:"flex", flexDirection:"column"
+            }}>
+              {/* notch */}
+              <div style={{position:"absolute", top:8, left:"50%", transform:"translateX(-50%)", width:90, height:22, borderRadius:99, background:"#000"}}/>
+              {/* status */}
+              <div className="mono" style={{padding:"14px 24px 0", display:"flex", justifyContent:"space-between", fontSize:10, color:"var(--ink-2)"}}>
+                <span>9:41</span><span>● ● ●</span>
+              </div>
+              <div style={{padding:"32px 20px 16px"}}>
+                <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+                  <Mark size={22}/>
+                  <div style={{width:28,height:28,borderRadius:99,background:"var(--bg-2)"}}/>
+                </div>
+                <div className="mono" style={{fontSize:10, marginTop:18, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.12em"}}>{lang==="es"?"Saldo disponible":"Available balance"}</div>
+                <div className="display" style={{fontSize:32, marginTop:4}}>$1.250<span style={{fontSize:18, color:"var(--ink-3)"}}>,00</span></div>
+                <div style={{
+                  marginTop:14, padding:14, borderRadius:14, background:"var(--navy)", color:"var(--bg)",
+                  display:"flex", justifyContent:"space-between", alignItems:"center"
+                }}>
+                  <div>
+                    <div style={{fontSize:11, color:"rgba(244,247,249,0.65)"}}>{lang==="es"?"Próxima cuota":"Next installment"}</div>
+                    <div style={{fontSize:16, fontWeight:600, marginTop:2}}>$87,40 · {lang==="es"?"15 may":"May 15"}</div>
+                  </div>
+                  <div style={{padding:"6px 10px", borderRadius:99, background:"var(--accent)", color:"var(--navy)", fontSize:11, fontWeight:600}}>{lang==="es"?"Pagar":"Pay"}</div>
+                </div>
+                <div style={{marginTop:14, display:"grid", gridTemplateColumns:"1fr 1fr", gap:8}}>
+                  {[
+                    {l: lang==="es"?"Solicitar":"Apply", c:"var(--bg-2)"},
+                    {l: lang==="es"?"Aprender":"Learn", c:"rgba(21,200,178,0.18)"},
+                    {l: lang==="es"?"Negocio":"Business", c:"rgba(43,212,156,0.18)"},
+                    {l: lang==="es"?"Soporte":"Support", c:"var(--bg-2)"},
+                  ].map((b,i)=>(
+                    <div key={i} style={{
+                      padding:"14px 12px", borderRadius:12, background:b.c,
+                      fontSize:12, fontWeight:500
+                    }}>{b.l}</div>
+                  ))}
+                </div>
+                <div style={{marginTop:14}}>
+                  <div className="mono" style={{fontSize:10, color:"var(--ink-3)", textTransform:"uppercase", letterSpacing:"0.12em"}}>{lang==="es"?"Lección de hoy":"Today's lesson"}</div>
+                  <div style={{
+                    marginTop:8, padding:14, borderRadius:14, border:"1px solid var(--line)", background:"var(--white)"
+                  }}>
+                    <div className="mono" style={{fontSize:9, color:"var(--accent)", letterSpacing:"0.12em"}}>D-02 · 04/04</div>
+                    <div style={{fontSize:13, fontWeight:600, marginTop:4}}>{lang==="es"?"¿Cuánta deuda es saludable?":"How much debt is healthy?"}</div>
+                    <div className="mono" style={{fontSize:10, color:"var(--ink-3)", marginTop:6}}>4 MIN</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Testimonials ---------------- */
+function Testimonials({ lang }) {
+  const t = COPY[lang].testim;
+  return (
+    <section style={{padding:"120px 32px", maxWidth:1280, margin:"0 auto"}}>
+      <SectionHead kicker={t.kicker} title={t.title}/>
+      <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:20, marginTop:48}}>
+        {t.items.map((it,i)=>(
+          <figure key={i} style={{
+            margin:0, padding:32, borderRadius:24,
+            background: i===1 ? "var(--navy)" : "var(--white)",
+            color: i===1 ? "var(--bg)" : "var(--ink)",
+            border: i===1 ? "none" : "1px solid var(--line)",
+            display:"flex", flexDirection:"column", justifyContent:"space-between",
+            minHeight:300
+          }}>
+            <div className="display" style={{
+              fontSize:48, color: i===1 ? "var(--accent)" : "var(--accent)", lineHeight:1, marginBottom:8
+            }}>“</div>
+            <blockquote style={{
+              margin:0, fontSize:17, lineHeight:1.5, fontWeight:500,
+              color: i===1 ? "var(--bg)" : "var(--ink)"
+            }}>{it.q}</blockquote>
+            <figcaption style={{marginTop:24, display:"flex", alignItems:"center", gap:12}}>
+              <div style={{
+                width:36, height:36, borderRadius:99,
+                background: i===1 ? "var(--accent)" : "var(--navy)",
+                color: i===1 ? "var(--navy)" : "var(--accent)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:13, fontWeight:600
+              }}>{it.n.split(" ").map(w=>w[0]).join("")}</div>
+              <div>
+                <div style={{fontSize:14, fontWeight:600}}>{it.n}</div>
+                <div className="mono" style={{
+                  fontSize:11, textTransform:"uppercase", letterSpacing:"0.1em",
+                  color: i===1 ? "rgba(244,247,249,0.65)" : "var(--ink-3)"
+                }}>{it.r}</div>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- FAQ ---------------- */
+function FAQ({ lang }) {
+  const t = COPY[lang].faq;
+  const [open, setOpen] = useState(0);
+  return (
+    <section id="nosotros" style={{padding:"120px 32px", background:"var(--bg-2)"}}>
+      <div style={{maxWidth:980, margin:"0 auto"}}>
+        <SectionHead kicker={t.kicker} title={t.title} align="center"/>
+        <div style={{marginTop:48, borderTop:"1px solid var(--line-2)"}}>
+          {t.items.map((q,i)=>(
+            <div key={i} style={{borderBottom:"1px solid var(--line-2)"}}>
+              <button onClick={()=>setOpen(open===i?-1:i)} style={{
+                width:"100%", padding:"24px 0", display:"flex", justifyContent:"space-between",
+                alignItems:"center", textAlign:"left", gap:16
+              }}>
+                <span className="display" style={{fontSize:22}}>{q.q}</span>
+                <span style={{
+                  width:32, height:32, borderRadius:99, border:"1px solid var(--line-2)",
+                  display:"flex", alignItems:"center", justifyContent:"center", flex:"0 0 auto",
+                  background: open===i ? "var(--navy)" : "transparent",
+                  color: open===i ? "var(--accent)" : "var(--ink)",
+                  transition:"all .2s"
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" style={{transform: open===i?"rotate(45deg)":"none", transition:"transform .2s"}}>
+                    <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </span>
+              </button>
+              <div style={{
+                maxHeight: open===i ? 200 : 0, overflow:"hidden",
+                transition:"max-height .35s ease",
+              }}>
+                <p style={{margin:0, padding:"0 80px 24px 0", fontSize:16, lineHeight:1.6, color:"var(--ink-2)"}}>{q.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Big CTA ---------------- */
+function BigCTA({ lang }) {
+  const t = COPY[lang].cta;
+  return (
+    <section id="cta" style={{padding:"120px 32px", maxWidth:1280, margin:"0 auto"}}>
+      <div style={{
+        padding:"80px 64px", borderRadius:32, background:"var(--navy)", color:"var(--bg)",
+        position:"relative", overflow:"hidden", textAlign:"center"
+      }}>
+        <div aria-hidden="true" style={{
+          position:"absolute", inset:0, opacity:0.18,
+          backgroundImage:"radial-gradient(circle at 20% 30%, rgba(21,200,178,0.4), transparent 40%), radial-gradient(circle at 80% 70%, rgba(43,212,156,0.4), transparent 40%)"
+        }}/>
+        <div style={{position:"relative", maxWidth:800, margin:"0 auto"}}>
+          <h2 className="display" style={{fontSize:"clamp(36px, 5vw, 64px)", margin:"0 0 16px", color:"var(--bg)"}}>{t.title}</h2>
+          <p style={{fontSize:18, color:"rgba(244,247,249,0.78)", margin:"0 0 36px"}}>{t.sub}</p>
+          <div style={{display:"inline-flex", gap:14, flexWrap:"wrap", justifyContent:"center"}}>
+            <a href={PLAY_URL} target="_blank" rel="noreferrer" style={{
+              padding:"16px 26px", borderRadius:999, background:"var(--accent)", color:"var(--navy)",
+              fontSize:15, fontWeight:600, display:"inline-flex", gap:10, alignItems:"center"
+            }}>{t.primary} <Arrow size={16}/></a>
+            <a href="#" style={{
+              padding:"16px 26px", borderRadius:999, border:"1px solid rgba(244,247,249,0.35)", color:"var(--bg)",
+              fontSize:15, fontWeight:500
+            }}>{t.secondary}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Footer ---------------- */
+function Footer({ lang }) {
+  const t = COPY[lang].foot;
+  return (
+    <footer style={{padding:"80px 32px 48px", borderTop:"1px solid var(--line)"}}>
+      <div style={{maxWidth:1280, margin:"0 auto"}}>
+        <div style={{display:"grid", gridTemplateColumns:"1.4fr 1fr 1fr 1fr 1fr", gap:48, marginBottom:64}}>
+          <div>
+            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:18}}>
+              <Mark/>
+              <span className="display" style={{fontSize:22, fontWeight:700}}>PrestaPay</span>
+            </div>
+            <p style={{fontSize:14, lineHeight:1.55, color:"var(--ink-2)", margin:"0 0 16px", maxWidth:280}}>{t.tag}</p>
+            <p className="mono" style={{fontSize:11, color:"var(--ink-3)", letterSpacing:"0.08em", lineHeight:1.5, margin:0}}>{t.addr}</p>
+          </div>
+          {t.cols.map((c,i)=>(
+            <div key={i}>
+              <div className="mono" style={{fontSize:11, color:"var(--accent)", textTransform:"uppercase", letterSpacing:"0.14em", fontWeight:600, marginBottom:18}}>{c.t}</div>
+              <ul style={{padding:0, margin:0, listStyle:"none", display:"flex", flexDirection:"column", gap:10}}>
+                {c.l.map((l,j)=>(
+                  <li key={j} style={{fontSize:14, color:"var(--ink-2)"}}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div style={{
+          paddingTop:28, borderTop:"1px solid var(--line)",
+          display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:16
+        }}>
+          <div className="mono" style={{fontSize:11, color:"var(--ink-3)", letterSpacing:"0.08em"}}>{t.copyright}</div>
+          <div style={{display:"flex", gap:18, fontSize:12, color:"var(--ink-3)"}}>
+            <span>IBBA Group</span>
+            <span>·</span>
+            <span>Finvero</span>
+            <span>·</span>
+            <span>Quito, Ecuador 🇪🇨</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ---------------- App ---------------- */
+function App() {
+  const [lang, setLang] = useState("es");
+  useEffect(()=>{
+    document.documentElement.lang = lang;
+    document.title = lang==="es"
+      ? "PrestaPay — Crédito que enseña, negocios que crecen"
+      : "PrestaPay — Credit that teaches, businesses that grow";
+  },[lang]);
+
+  return (
+    <div>
+      <Nav lang={lang} setLang={setLang}/>
+      <Hero lang={lang}/>
+      <Pillars lang={lang}/>
+      <How lang={lang}/>
+      <Education lang={lang}/>
+      <Business lang={lang}/>
+      <AppSection lang={lang}/>
+      <Testimonials lang={lang}/>
+      <FAQ lang={lang}/>
+      <BigCTA lang={lang}/>
+      <Footer lang={lang}/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
